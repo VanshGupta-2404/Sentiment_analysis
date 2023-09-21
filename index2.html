@@ -1,19 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Command Checker</title>
+    <title>Restaurant Review Sentiment Analysis</title>
 </head>
 <body>
-    <h1>Command Checker</h1>
-    
-    <form method="POST" action="/check_command">
-        <label for="command">Enter a Command:</label>
-        <input type="text" id="command" name="command" required>
-        <input type="submit" value="Check">
+    <h1>Restaurant Review Sentiment Analysis</h1>
+    <form method="POST" action="/predict_sentiment">
+        <label for="user_review">Enter your restaurant review:</label>
+        <input type="text" id="user_review" name="user_review" required>
+        <input type="submit" value="Analyze">
     </form>
-
-    <div id="result">
-        <!-- The result will be displayed here -->
-    </div>
 </body>
 </html>
