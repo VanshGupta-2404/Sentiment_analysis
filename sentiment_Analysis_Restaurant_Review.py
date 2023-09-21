@@ -1,20 +1,16 @@
-
-from google.colab import drive
-drive.mount('/content/drive')
-
 import numpy as np
 import pandas as pd
 #import flask as Flask
-from flask import Flask,render_template
-
-file_path = 'drive/My Drive/content/Colab Notebooks/Restaurant_Reviews.tsv'
+from flask import Flask,render_template, request
+app = Flask(__name__)
+file_path = 'Restaurant_Reviews.tsv'
 
 # Read the TSV file
 data = pd.read_csv(file_path, delimiter='\t', quoting=3)
 
 # Now you can work with the 'data' DataFrame
 
-data.shape
+
 
 data.columns
 
@@ -102,7 +98,7 @@ from sklearn.metrics import accuracy_score
 best_accuracy = 0.0
 best_n_estimators = 0
 
-for n_estimators in range(1, 101,1):  # Adjust the range of n_estimators as needed
+for n_estimators in range(1, 101,2):  # Adjust the range of n_estimators as needed
     temp_classifier = RandomForestClassifier(n_estimators=n_estimators, random_state=0)
     temp_classifier.fit(X_train, y_train)
     temp_y_pred = temp_classifier.predict(X_test)
@@ -123,18 +119,6 @@ classifier = RandomForestClassifier(n_estimators=n_estimators, random_state=0)
 
 # Fit the classifier to your training data
 classifier.fit(X_train, y_train)
-
-from flask import Flask
-from flask_ngrok import run_with_ngrok
-
-app = Flask(__name__)
-run_with_ngrok(app)
-@app.route('/')
-def part3():
-    return '<h1>Welcome to CID</h1>'
-app.run()
-
-
 
 def predict_sentiment(sample_review):
   sample_review = re.sub(pattern='[^a-zA-Z]',repl = ' ', string = sample_review)
@@ -175,6 +159,25 @@ if predict_sentiment(sample_review):
   print("This is a positive review")
 else:
   print('This is Negative review')
+  
+  
+  
+@app.route('/')
+def render_form():
+    return render_template('part2.html')
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# Define a route to handle the form submission and display the result
+@app.route('/predict_sentiment', methods=['POST'])
+def predict_sentiment_from_form():
+    user_review = request.form['user_review']
+    result = predict_sentiment(user_review)
+
+    if result:
+        sentiment = "Positive"
+    else:
+        sentiment = "Negative"
+
+    return f'This is a {sentiment} review'
+
+if __name__ == '__main__':
+    app.run()
